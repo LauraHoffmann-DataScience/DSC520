@@ -1,0 +1,83 @@
+---
+title: "2.1 American Community Survey"
+author: "Laura Hoffmann"
+date: "6/13/2020"
+---
+
+```{r, installs, include=FALSE}
+library(readr)
+library(tidyverse)
+library(pastecs)
+ACS14 <- read_csv("~/RStudio/dsc520/data/acs-14-1yr-s0201.csv", col_names = TRUE)
+```
+
+## 1)
+```{r}
+class(ACS14$Id)
+class(ACS14$Id2)
+class(ACS14$Geography)
+class(ACS14$PopGroupID)
+class(ACS14$`POPGROUP.display-label`)
+class(ACS14$RacesReported)
+class(ACS14$HSDegree)
+class(ACS14$BachDegree)
+```
+
+## 2)
+```{r}
+str(ACS14)
+nrow(ACS14)
+ncol(ACS14)
+```
+
+## 3)
+```{r}
+ACSHistogram <- ggplot(ACS14, aes(HSDegree)) + theme(legend.position = "none") + geom_histogram(aes(y = ..density..), binwidth = .5, colour = "black", fill = "white") + labs(title = "County Populations with HS Degrees", x = "% of Population with HS Degrees", y = "Density")
+ACSHistogram
+```
+
+## 4)
+### a) Looking at the histogram, the data distribution is unimodal with the mode being around 89% of the population having their HS Degree.
+```{r}
+getmode <- function(v) {
+    uniqv <- unique(v)
+    uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+getmode(ACS14$HSDegree)
+```
+
+### b) I would say that the histogram is not necessarily symmetrical as there are some outliers for counties with lower percentages of people with HS Degrees.
+### c) If we take the outlier (62.2%) out of the data the histogram is loosely bell-shaped, however obviously when all data is included, it's less bell shaped.
+### d) The histogram is not normal.
+```{r}
+shapiro.test(ACS14$HSDegree)
+```
+
+### Since the p-value is 0.000000003194 (much smaller than .05), this indicates a deviation from normality.
+### e) The histogram is negatively skewed because the majority of the data is on the right hand side of the graph.
+### f)
+```{r}
+ACSHistogram + stat_function(fun = dnorm, args = list(mean = mean(ACS14$HSDegree, na.rm = TRUE), sd = sd(ACS14$HSDegree, na.rm = TRUE)), colour="blue", size=1)
+```
+
+### g) A normal distribution is way off from the data distribution and is not an accurate model for the data in this histogram.
+
+## 5) 
+```{r}
+qqplotHSDegree <- qplot(sample = ACS14$HSDegree)
+qqplotHSDegree
+```
+
+
+## 6) 
+### a & b) The distribution is not normal and is still negatively skewed, we can see that because of the curve in the line.
+
+## 7)
+```{r}
+round(stat.desc(ACS14$HSDegree, basic = FALSE, norm = TRUE), digits = 3)
+```
+![Screen Capture](SC_2.1.png)
+
+## 8) 
+### This to me and according to what we've read this week, is an odd set of data. On page 169 of Discovering Statistics Using R, it is mentioned that "sampling distributions will tend to be normal regardless of the population distribution in samples of 30 of more." In this sample we have 136 entries and it appears to be far from normal, according to all of these graphs and functions. In addition, when considering the skew and kurtosis, the book mentions on page 174 that "the values of skew and kurtosis should be zero in a normal distribution." As we can see from the output of the stat.desc function skew and kurtosis are not zero. The skew value is in the negatives which means the scores are piled up on the right. Also, because the kurtosis is positive and far from zero, this means that the tail has a pointy and heavy distribution, much like we can see in the graphs. I would like to think that increasing the sample size might help with creating a more normal distribution, bringing the skew and kurtosis closer to zero. I believe that looking at the results from the stat.desc function helped me to understand the z-score a little bit further, as I like looking at the numbers all together, to put into the equations.
+
