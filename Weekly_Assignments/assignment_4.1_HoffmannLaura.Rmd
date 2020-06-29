@@ -1,0 +1,81 @@
+---
+title: "Assignment 4.1 Student Survey"
+author: "Laura Hoffmann"
+date: "6/28/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggm)
+knitr::opts_knit$set(root.dir = "C:/Users/Laura/Documents/RStudio/dsc520")
+StudentSurvey <- read.csv("data/student-survey.csv")
+```
+
+# A
+
+```{r A Chunk}
+cov(StudentSurvey, use="everything", method="pearson")
+```
+
+#### To look at whether two variables covary is the simplest way to look at whether the two variables are associated. In other words "calculating the covariance is a good way to asses whether two variables are related to each other ("Discovering Statistics Using R", page 208). Covariance measures which direction these two variables deviate from their own mean. So a positive covariance would show us that the variables deviate from their own means in the same direction where a negative covariance shows us that the variables deviate from their means in the opposite direction. From the student survey data set we see the results indicate as TimeReading increases or goes above its mean, TimeTV and Happiness both decrease, or go below their mean. As TimeTv increases or goes above its mean, TimeReading decreases, however Happiness increases. So, this shows that survey users are happier watching TV than they are reading, and also it is obvious that if they are spending more time doing one thing, they will be spending less time doing the other.
+
+# B
+
+```{r B Chunk}
+glimpse(StudentSurvey)
+```
+
+#### Right now we can see integers (or in Happiness column, a double-class with a decimal point) are being used for the variables. For the Gender column it would be possible to change the 0 and 1 integers representing the genders to strings that actually say "male" and "female" however that would impact our tests for the covariance calculation because we wouldn't be able to put strings into the mathematical equation to find covariance. It is good to have the genders represented by 0s and 1s to be able to find the covariances with other variables. This is known as discrete dichotomy, because there is no underlying continuum in this variable, the person is either male or female. 
+
+# C
+
+#### I will choose to use the cor() function with the Pearson method to measure the correlation coefficient of all variables and when I need to include a confidence interval I will use the cor.test() function. The Pearson method will allow me to measure the linear dependence between two variables that have interval data. In the case of using the cor() function I can produce an output of Pearson correlations between all variables by specifying the entire data set as an argument. To predict the correlations between the variables in this data set I will guess that TimeReading and TimeTV will have a nearly completely negative correlation. Based on the covariance results I predict that TimeReading and Happiness also has a negative correlation while TimeTV and Happiness should have a positive correlation coefficient.
+
+# D
+### 1
+
+```{r D1 Chunk}
+cor(StudentSurvey, method="pearson")
+```
+
+### 2
+
+#### Correlation Coefficient between TimeReading and Happiness
+
+```{r D2 Chunk}
+cor(StudentSurvey$TimeReading, StudentSurvey$Happiness, method="pearson")
+```
+
+### 3
+
+```{r D3 Chunk}
+cor.test(StudentSurvey$TimeReading, StudentSurvey$Happiness, method="pearson", conf.level=0.99)
+```
+
+### 4
+
+#### Based on the information I can observe from the correlation tests, I can see that the time spent reading and the time spent watching TV is negatively correlated. This is because if you spend more time doing one thing you have less time to spend doing the other. In relation to happiness, we can see that watching TV and happiness have a positive correlation which means as more TV is watched, happiness increases as well. Whereas time spent reading and happiness have a negative correlation, so as more time is spent reading, happiness will decrease. We don't know which gender is 0 and which is 1 but we can see that Gender has hardly any correlation with the other three variables.
+
+# E
+
+```{r E Chunk}
+cor(StudentSurvey)
+cor(StudentSurvey)^2 * 100
+```
+
+#### By squaring the correlation coefficients we find the coefficient of determination that tells us the measure of the amount of variablity in one variable that is shared by another. By multiplying the code by 100 we can see the percentages. We can see that about 78% of vaiability in TimeReading is shared by TimeTv, and about 19% of variability in TimeReading is shared by Happiess. About 40.5% of the variability in TimeTV is shared with Happiness. So these results mean that the time spent reading can account for 78% of variation in the time spent watching TV, and vice versa. The time spent reading can also account for 19% of the variation in Happiness. In addition, the time spent watching TV can account for 40.5% of the variation in Happiness. We can also observe that Gender is responsible for 0.8% of the variation in time reading, 0.004% of the variation in time spent watching TV and 2.5% of the variation in happines. This means gender doesn't have much of an impact on any of the other variables.
+
+# F
+
+#### Based on the results from these covariance and correlation tests we can see that when students watched more TV their time spent reading decreased. This can be assumed because when more time is spent watching TV there is less time in their day to spend reading. Therefore these variables are negatively related, because as one increases the other decreases.
+
+# G
+
+```{r G Chunk}
+StudentSurvey2 <- StudentSurvey[, c("TimeReading", "Happiness", "TimeTV")]
+pc <- pcor(c("TimeReading", "Happiness", "TimeTV"), var(StudentSurvey2))
+pc
+```
+
+#### In the above pcor test the controlling variable is TimeTV. This means that I am conducting a partial correlation between time spent reading and happiness while controlling for the effect of time spent watching TV. We can see that the partial correlation between TimeReading and Happiness is 0.35 which is very different from the -0.43 correlation when time spent watching TV is not controlled. By squaring this partial correlation we get 0.12 or 12% for R^2 which means that time spent reading can account for 12% of the variance in happiness when time spent watching TV is controlled for. This is different from when TimeTV was not controlled, where it was calculated that time spent reading accounted for about 19% of the variance in happiness.
