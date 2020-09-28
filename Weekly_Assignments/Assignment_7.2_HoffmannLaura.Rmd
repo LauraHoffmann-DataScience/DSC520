@@ -1,0 +1,56 @@
+---
+title: "Assignment 7.2"
+author: "Laura Hoffmann"
+date: "7/18/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "C:/Users/Laura/Documents/RStudio/dsc520")
+```
+
+```{r}
+BCData <- read.csv("data/binary-classifier-data.csv")
+BCData$label <- factor(BCData$label)
+BCModel.1 <- glm(label~x + y, data=BCData, family=binomial())
+summary(BCModel.1)
+```
+
+# A
+
+```{r}
+res <- predict(BCModel.1, BCData, type="response")
+confmatrix <- table(actual_value = BCData$label, predicted_value = res > 0.5)
+confmatrix
+acc <- sum(diag(confmatrix))/sum(confmatrix)
+acc
+```
+
+### 874 out of 1498 predictions were made accurately which gives us an accuracy percentage of about 58.34%.
+
+# B
+
+# I'm going to start this question by setting the seed and splitting my data into a training data frame and a testing data frame in order to create a machine learning, k means clustering to use the nearest neighbor method in order to create an accurate 
+
+```{r}
+library(class)
+set.seed(1234)
+ind <- sample(2, nrow(BCData), replace=TRUE, prob=c(0.67, 0.33))
+BCD.Train <- BCData[ind==1, 2:3]
+BCD.Test <- BCData[ind==2, 2:3]
+BCD.TrainLabels <- BCData[ind==1,1]
+BCD.TestLabels <- BCData[ind==2,1]
+Binary_Pred <- knn(train=BCD.Train, test=BCD.Test, cl=BCD.TrainLabels, k=3)
+```
+
+```{r}
+library(gmodels)
+CrossTable(x = BCD.TestLabels, y = Binary_Pred, prop.chisq=FALSE)
+KNNacc <- sum(BCD.TestLabels==Binary_Pred)/length(Binary_Pred)
+KNNacc
+```
+### As we can see, the K means clustering using the nearest neighbor method presents a lot better classification accuracy prediction. It correctly placed 461 of 478 data points for their labels of our testing group data frame giving us an accuracy of 96.44%.
+
+# C
+
+### These models present different accuracies because for the nearest neighbor clustering model, the data is used to measure x and y and place it on a graph. This is followed by utilizing the data of the closest points and measuring their label value (1 or 0), and then based on their closest neighbors' data on the plot we can predict what that point will be labelled. With this model we are able to train the data with the training group and in return, test it with the testing group created for a more accurate prediction. The logistic regression on the other hand simply measures the categorical outcome based on our knowledge of categorical OR continuous predictors. In other words, we take a look at how the predictors and outcome are correlated and whether knowing the predictor can give us an answer on what the outcome might be.

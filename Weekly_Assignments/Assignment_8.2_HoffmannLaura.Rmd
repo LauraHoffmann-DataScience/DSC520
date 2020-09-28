@@ -1,0 +1,211 @@
+---
+title: "Assignment 8.2"
+author: "Laura Hoffmann"
+date: "7/24/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(ggplot2); library(class); library(gmodels)
+knitr::opts_knit$set(root.dir = "C:/Users/Laura/Documents/RStudio/dsc520")
+```
+
+```{r read csvs}
+binary_data <- read.csv("data/binary-classifier-data.csv", header=TRUE)
+trinary_data <- read.csv("data/trinary-classifier-data.csv", header=TRUE)
+binary_data$label=factor(binary_data$label)
+trinary_data$label=factor(trinary_data$label)
+```
+
+# A
+
+```{r binary data plot, echo=TRUE}
+binary.plot <- ggplot(binary_data, aes(x,y,color=label))
+binary.plot + geom_point() + ggtitle("Binary Data Plot")
+```
+
+```{r trinary data plot, echo=TRUE}
+trinary.plot <- ggplot(trinary_data, aes(x,y,color=label))
+trinary.plot + geom_point() + ggtitle("Trinary Data Plot")
+```
+
+# B
+
+### The following sections are broken down into Binary data setup, Trinary data setup, and then my plots to measure the accuracies of both binary and trinary data frames using nearest neighbor clustering in intervals of 3, 5, 10, 15, 20, and 25. 
+
+## Binary KNN Measures
+
+```{r binary k means setup}
+set.seed(987)
+ind <- sample(2, nrow(binary_data), replace=TRUE, prob=c(0.67, 0.33))
+binary.train <- binary_data[ind==1, 2:3]
+binary.test <- binary_data[ind==2, 2:3]
+binary.trainlabels <- binary_data[ind==1,1]
+binary.testlabels <- binary_data[ind==2,1]
+```
+
+### Binary K=3
+
+```{r Bi neighbor3, echo=TRUE}
+binary_pred3 <- knn(train=binary.train, test=binary.test, cl=binary.trainlabels, k=3)
+CrossTable(x = binary.testlabels, y = binary_pred3, prop.chisq=FALSE)
+KNN3acc <- sum(binary.testlabels==binary_pred3)/length(binary_pred3)
+KNN3acc
+```
+
+### Binary K=5
+
+```{r Bi neighbor5, echo=TRUE}
+binary_pred5 <- knn(train=binary.train, test=binary.test, cl=binary.trainlabels, k=5)
+CrossTable(x = binary.testlabels, y = binary_pred5, prop.chisq=FALSE)
+KNN5acc <- sum(binary.testlabels==binary_pred5)/length(binary_pred5)
+KNN5acc
+```
+
+### Binary K=10
+
+```{r Bi neighbor10, echo=TRUE}
+binary_pred10 <- knn(train=binary.train, test=binary.test, cl=binary.trainlabels, k=10)
+CrossTable(x = binary.testlabels, y = binary_pred10, prop.chisq=FALSE)
+KNN10acc <- sum(binary.testlabels==binary_pred10)/length(binary_pred10)
+KNN10acc
+```
+
+### Binary K=15
+
+```{r Bi neighbor15, echo=TRUE}
+binary_pred15 <- knn(train=binary.train, test=binary.test, cl=binary.trainlabels, k=15)
+CrossTable(x = binary.testlabels, y = binary_pred15, prop.chisq=FALSE)
+KNN15acc <- sum(binary.testlabels==binary_pred15)/length(binary_pred15)
+KNN15acc
+```
+
+### Binary K=20
+
+```{r Bi neighbor20, echo=TRUE}
+binary_pred20 <- knn(train=binary.train, test=binary.test, cl=binary.trainlabels, k=20)
+CrossTable(x = binary.testlabels, y = binary_pred20, prop.chisq=FALSE)
+KNN20acc <- sum(binary.testlabels==binary_pred20)/length(binary_pred20)
+KNN20acc
+```
+
+### Binary K=25
+
+```{r Bi neighbor25, echo=TRUE}
+binary_pred25 <- knn(train=binary.train, test=binary.test, cl=binary.trainlabels, k=25)
+CrossTable(x = binary.testlabels, y = binary_pred25, prop.chisq=FALSE)
+KNN25acc <- sum(binary.testlabels==binary_pred25)/length(binary_pred25)
+KNN25acc
+```
+
+## Trinary KNN Measures
+
+```{r trinary k means setup}
+set.seed(1111)
+ind <- sample(2, nrow(trinary_data), replace=TRUE, prob=c(0.67, 0.33))
+trinary.train <- trinary_data[ind==1, 2:3]
+trinary.test <- trinary_data[ind==2, 2:3]
+trinary.trainlabels <- trinary_data[ind==1,1]
+trinary.testlabels <- trinary_data[ind==2,1]
+```
+
+### Trinary K=3
+
+```{r Tri neighbor3, echo=TRUE}
+trinary_pred3 <- knn(train=trinary.train, test=trinary.test, cl=trinary.trainlabels, k=3)
+CrossTable(x = trinary.testlabels, y = trinary_pred3, prop.chisq=FALSE)
+TKNN3acc <- sum(trinary.testlabels==trinary_pred3)/length(trinary_pred3)
+TKNN3acc
+```
+
+### Trinary K=5
+
+```{r Tri neighbor5, echo=TRUE}
+trinary_pred5 <- knn(train=trinary.train, test=trinary.test, cl=trinary.trainlabels, k=5)
+CrossTable(x = trinary.testlabels, y = trinary_pred5, prop.chisq=FALSE)
+TKNN5acc <- sum(trinary.testlabels==trinary_pred5)/length(trinary_pred5)
+TKNN5acc
+```
+
+### Trinary K=10
+
+```{r Tri neighbor10, echo=TRUE}
+trinary_pred10 <- knn(train=trinary.train, test=trinary.test, cl=trinary.trainlabels, k=10)
+CrossTable(x = trinary.testlabels, y = trinary_pred10, prop.chisq=FALSE)
+TKNN10acc <- sum(trinary.testlabels==trinary_pred10)/length(trinary_pred10)
+TKNN10acc
+```
+
+### Trinary K=15
+
+```{r Tri neighbor15, echo=TRUE}
+trinary_pred15 <- knn(train=trinary.train, test=trinary.test, cl=trinary.trainlabels, k=15)
+CrossTable(x = trinary.testlabels, y = trinary_pred15, prop.chisq=FALSE)
+TKNN15acc <- sum(trinary.testlabels==trinary_pred15)/length(trinary_pred15)
+TKNN15acc
+```
+
+### Trinary K=20
+
+```{r Tri neighbor20, echo=TRUE}
+trinary_pred20 <- knn(train=trinary.train, test=trinary.test, cl=trinary.trainlabels, k=20)
+CrossTable(x = trinary.testlabels, y = trinary_pred20, prop.chisq=FALSE)
+TKNN20acc <- sum(trinary.testlabels==trinary_pred20)/length(trinary_pred20)
+TKNN20acc
+```
+
+### Trinary K=25
+
+```{r Tri neighbor25, echo=TRUE}
+trinary_pred25 <- knn(train=trinary.train, test=trinary.test, cl=trinary.trainlabels, k=25)
+CrossTable(x = trinary.testlabels, y = trinary_pred25, prop.chisq=FALSE)
+TKNN25acc <- sum(trinary.testlabels==trinary_pred25)/length(trinary_pred25)
+TKNN25acc
+```
+
+## Plots
+
+```{r}
+kvalues <- c(3, 5, 10, 15, 20, 25)
+
+biacc <- c(KNN3acc, KNN5acc, KNN10acc, KNN15acc, KNN20acc, KNN25acc) * 100
+bi.plotdf <- data.frame(kvalues, biacc)
+bi.plot <- ggplot(bi.plotdf, aes(kvalues, biacc)) + geom_point() + labs(x="K Values", y="Accuracy", title="Binary K Value Accuracies")
+bi.plot
+
+
+triacc <- c(TKNN3acc, TKNN5acc, TKNN10acc, TKNN15acc, TKNN20acc, TKNN25acc) * 100
+tri.plotdf <- data.frame(kvalues, triacc)
+tri.plot <- ggplot(tri.plotdf, aes(kvalues, triacc)) + geom_point() + labs(x="K Values", y="Accuracy", title="Trinary K Value Accuracies")
+tri.plot
+```
+
+
+## Grouped Plot
+
+```{r}
+kvalues <- c(3, 5, 10, 15, 20, 25)
+
+biacc <- c(KNN3acc, KNN5acc, KNN10acc, KNN15acc, KNN20acc, KNN25acc) * 100
+Label <- c("Binary")
+Accuracy <- round(biacc, digits=2)
+bi.set <- cbind(Label, kvalues, Accuracy)
+
+triacc <- c(TKNN3acc, TKNN5acc, TKNN10acc, TKNN15acc, TKNN20acc, TKNN25acc) * 100
+Label <- c("Trinary")
+Accuracy <- round(triacc, digits=2)
+tri.set <- cbind(Label, kvalues, Accuracy)
+
+kacc.plot <- data.frame(rbind(bi.set, tri.set))
+```
+
+```{r}
+ACC.plot <- ggplot(kacc.plot, aes(as.numeric(kvalues), Accuracy, color=Label)) + geom_point() + labs(x="K Value", y="Accuracy", title="KNN Accuracy Levels")
+ACC.plot
+```
+
+# C
+
+### It doesn't seem like a linear classifier would work well on these data sets because the data is built around clusters instead of showing a linear trend. The clusters are also randomly dispersed so it would be difficult to draw a line in either case that separates the different labels.
+
+

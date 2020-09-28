@@ -1,0 +1,267 @@
+---
+title: "Assignment 8.3"
+author: "Laura Hoffmann"
+date: "7/24/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(ggplot2); library(class); library(gmodels)
+knitr::opts_knit$set(root.dir = "C:/Users/Laura/Documents/RStudio/dsc520")
+```
+
+```{r}
+cluster_data <- read.csv("data/clustering-data.csv", header=TRUE)
+```
+
+# A
+
+```{r}
+cluster.plot <- ggplot(cluster_data, aes(x,y)) + geom_point() + ggtitle("Clustering Data Plot")
+cluster.plot 
+```
+
+# B
+
+```{r}
+set.seed(58)
+
+# K=2
+clusters.2 <- kmeans(cluster_data, 2)
+cluster_data$k2 <- as.factor(clusters.2$cluster)
+clus2.plot <- ggplot(cluster_data, mapping = aes(x, y, color = k2)) + geom_point() + ggtitle("K-Means Clustering K=2")
+clus2.plot
+
+# K=3
+clusters.3 <- kmeans(cluster_data, 3)
+cluster_data$k3 <- as.factor(clusters.3$cluster)
+clus3.plot <- ggplot(cluster_data, mapping = aes(x, y, color = k3)) + geom_point() + ggtitle("K-Means Clustering K=3")
+clus3.plot
+
+# K=4
+clusters.4 <- kmeans(cluster_data, 4)
+cluster_data$k4 <- as.factor(clusters.4$cluster)
+clus4.plot <- ggplot(cluster_data, mapping = aes(x, y, color = k4)) + geom_point() + ggtitle("K-Means Clustering K=4")
+clus4.plot
+
+# K=5
+clusters.5 <- kmeans(cluster_data, 5)
+cluster_data$k5 <- as.factor(clusters.5$cluster)
+clus5.plot <- ggplot(cluster_data, mapping = aes(x, y, color = k5)) + geom_point() + ggtitle("K-Means Clustering K=5")
+clus5.plot
+
+# K=6
+clusters.6 <- kmeans(cluster_data, 6)
+cluster_data$k6 <- as.factor(clusters.6$cluster)
+clus6.plot <- ggplot(cluster_data, mapping = aes(x, y, color = k6)) + geom_point() + ggtitle("K-Means Clustering K=6")
+clus6.plot
+
+# K=7
+clusters.7 <- kmeans(cluster_data, 7)
+cluster_data$k7 <- as.factor(clusters.7$cluster)
+clus7.plot <- ggplot(cluster_data, mapping = aes(x, y, color = k7)) + geom_point() + ggtitle("K-Means Clustering K=7")
+clus7.plot
+
+# K=8
+clusters.8 <- kmeans(cluster_data, 8)
+cluster_data$k8 <- as.factor(clusters.8$cluster)
+clus8.plot <- ggplot(cluster_data, mapping = aes(x, y, color = k8)) + geom_point() + ggtitle("K-Means Clustering K=8")
+clus8.plot
+
+# K=9
+clusters.9 <- kmeans(cluster_data, 9)
+cluster_data$k9 <- as.factor(clusters.9$cluster)
+clus9.plot <- ggplot(cluster_data, mapping = aes(x, y, color = k9)) + geom_point() + ggtitle("K-Means Clustering K=9")
+clus9.plot
+
+# K=10
+clusters.10 <- kmeans(cluster_data, 10)
+cluster_data$k10 <- as.factor(clusters.10$cluster)
+clus10.plot <- ggplot(cluster_data, mapping = aes(x, y, color = k10)) + geom_point() + ggtitle("K-Means Clustering K=10")
+clus10.plot
+
+# K=11
+clusters.11 <- kmeans(cluster_data, 11)
+cluster_data$k11 <- as.factor(clusters.11$cluster)
+clus11.plot <- ggplot(cluster_data, mapping = aes(x, y, color = k11)) + geom_point() + ggtitle("K-Means Clustering K=11")
+clus11.plot
+
+# K=12
+clusters.12 <- kmeans(cluster_data, 12)
+cluster_data$k12 <- as.factor(clusters.12$cluster)
+clus12.plot <- ggplot(cluster_data, mapping = aes(x, y, color = k12)) + geom_point()
+clus12.plot
+```
+
+# C
+
+```{r echo=TRUE}
+myDist<-function(p1,p2) sqrt((p1[,1]-p2[,1])^2+(p1[,2]-p2[,2])^2)
+```
+
+### K=2 Distance
+
+```{r echo=TRUE}
+dist.2.1 <- (myDist(cluster_data[clusters.2$cluster==1,],clusters.2$centers[1,,drop=FALSE]))
+dist.2.2 <- (myDist(cluster_data[clusters.2$cluster==2,],clusters.2$centers[2,,drop=FALSE]))
+dist.2 <- sum(dist.2.1, dist.2.2)/nrow(cluster_data)
+dist.2
+```
+
+### K=3 Distance
+
+```{r echo=TRUE}
+dist.3.1 <- (myDist(cluster_data[clusters.3$cluster==1,],clusters.3$centers[1,,drop=FALSE]))
+dist.3.2 <- (myDist(cluster_data[clusters.3$cluster==2,],clusters.3$centers[2,,drop=FALSE]))
+dist.3.3 <- (myDist(cluster_data[clusters.3$cluster==3,],clusters.3$centers[3,,drop=FALSE]))
+dist.3 <- sum(dist.3.1, dist.3.2, dist.3.3)/nrow(cluster_data)
+dist.3
+```
+
+### K=4 Distance
+
+```{r echo=TRUE}
+dist.4.1 <- (myDist(cluster_data[clusters.4$cluster==1,],clusters.4$centers[1,,drop=FALSE]))
+dist.4.2 <- (myDist(cluster_data[clusters.4$cluster==2,],clusters.4$centers[2,,drop=FALSE]))
+dist.4.3 <- (myDist(cluster_data[clusters.4$cluster==3,],clusters.4$centers[3,,drop=FALSE]))
+dist.4.4 <- (myDist(cluster_data[clusters.4$cluster==4,],clusters.4$centers[4,,drop=FALSE]))
+dist.4 <- sum(dist.4.1, dist.4.2, dist.4.3, dist.4.4)/nrow(cluster_data)
+dist.4
+```
+
+### K=5 Distance
+
+```{r echo=TRUE}
+dist.5.1 <- (myDist(cluster_data[clusters.5$cluster==1,],clusters.5$centers[1,,drop=FALSE]))
+dist.5.2 <- (myDist(cluster_data[clusters.5$cluster==2,],clusters.5$centers[2,,drop=FALSE]))
+dist.5.3 <- (myDist(cluster_data[clusters.5$cluster==3,],clusters.5$centers[3,,drop=FALSE]))
+dist.5.4 <- (myDist(cluster_data[clusters.5$cluster==4,],clusters.5$centers[4,,drop=FALSE]))
+dist.5.5 <- (myDist(cluster_data[clusters.5$cluster==5,],clusters.5$centers[5,,drop=FALSE]))
+dist.5 <- sum(dist.5.1, dist.5.2, dist.5.3, dist.5.4, dist.5.5)/nrow(cluster_data)
+dist.5
+```
+
+### K=6 Distance
+
+```{r echo=TRUE}
+dist.6.1 <- (myDist(cluster_data[clusters.6$cluster==1,],clusters.6$centers[1,,drop=FALSE]))
+dist.6.2 <- (myDist(cluster_data[clusters.6$cluster==2,],clusters.6$centers[2,,drop=FALSE]))
+dist.6.3 <- (myDist(cluster_data[clusters.6$cluster==3,],clusters.6$centers[3,,drop=FALSE]))
+dist.6.4 <- (myDist(cluster_data[clusters.6$cluster==4,],clusters.6$centers[4,,drop=FALSE]))
+dist.6.5 <- (myDist(cluster_data[clusters.6$cluster==5,],clusters.6$centers[5,,drop=FALSE]))
+dist.6.6 <- (myDist(cluster_data[clusters.6$cluster==6,],clusters.6$centers[6,,drop=FALSE]))
+dist.6 <- sum(dist.6.1, dist.6.2, dist.6.3, dist.6.4, dist.6.5, dist.6.6)/nrow(cluster_data)
+dist.6
+```
+
+### K=7 Distance
+
+```{r echo=TRUE}
+dist.7.1 <- (myDist(cluster_data[clusters.7$cluster==1,],clusters.7$centers[1,,drop=FALSE]))
+dist.7.2 <- (myDist(cluster_data[clusters.7$cluster==2,],clusters.7$centers[2,,drop=FALSE]))
+dist.7.3 <- (myDist(cluster_data[clusters.7$cluster==3,],clusters.7$centers[3,,drop=FALSE]))
+dist.7.4 <- (myDist(cluster_data[clusters.7$cluster==4,],clusters.7$centers[4,,drop=FALSE]))
+dist.7.5 <- (myDist(cluster_data[clusters.7$cluster==5,],clusters.7$centers[5,,drop=FALSE]))
+dist.7.6 <- (myDist(cluster_data[clusters.7$cluster==6,],clusters.7$centers[6,,drop=FALSE]))
+dist.7.7 <- (myDist(cluster_data[clusters.7$cluster==7,],clusters.7$centers[7,,drop=FALSE]))
+dist.7 <- sum(dist.7.1, dist.7.2, dist.7.3, dist.7.4, dist.7.5, dist.7.6, dist.7.7)/nrow(cluster_data)
+dist.7
+```
+
+### K=8 Distance
+
+```{r echo=TRUE}
+dist.8.1 <- (myDist(cluster_data[clusters.8$cluster==1,],clusters.8$centers[1,,drop=FALSE]))
+dist.8.2 <- (myDist(cluster_data[clusters.8$cluster==2,],clusters.8$centers[2,,drop=FALSE]))
+dist.8.3 <- (myDist(cluster_data[clusters.8$cluster==3,],clusters.8$centers[3,,drop=FALSE]))
+dist.8.4 <- (myDist(cluster_data[clusters.8$cluster==4,],clusters.8$centers[4,,drop=FALSE]))
+dist.8.5 <- (myDist(cluster_data[clusters.8$cluster==5,],clusters.8$centers[5,,drop=FALSE]))
+dist.8.6 <- (myDist(cluster_data[clusters.8$cluster==6,],clusters.8$centers[6,,drop=FALSE]))
+dist.8.7 <- (myDist(cluster_data[clusters.8$cluster==7,],clusters.8$centers[7,,drop=FALSE]))
+dist.8.8 <- (myDist(cluster_data[clusters.8$cluster==8,],clusters.8$centers[8,,drop=FALSE]))
+dist.8 <- sum(dist.8.1, dist.8.2, dist.8.3, dist.8.4, dist.8.5, dist.8.6, dist.8.7, dist.8.8)/nrow(cluster_data)
+dist.8
+```
+
+### K=9 Distance
+
+```{r echo=TRUE}
+dist.9.1 <- (myDist(cluster_data[clusters.9$cluster==1,],clusters.9$centers[1,,drop=FALSE]))
+dist.9.2 <- (myDist(cluster_data[clusters.9$cluster==2,],clusters.9$centers[2,,drop=FALSE]))
+dist.9.3 <- (myDist(cluster_data[clusters.9$cluster==3,],clusters.9$centers[3,,drop=FALSE]))
+dist.9.4 <- (myDist(cluster_data[clusters.9$cluster==4,],clusters.9$centers[4,,drop=FALSE]))
+dist.9.5 <- (myDist(cluster_data[clusters.9$cluster==5,],clusters.9$centers[5,,drop=FALSE]))
+dist.9.6 <- (myDist(cluster_data[clusters.9$cluster==6,],clusters.9$centers[6,,drop=FALSE]))
+dist.9.7 <- (myDist(cluster_data[clusters.9$cluster==7,],clusters.9$centers[7,,drop=FALSE]))
+dist.9.8 <- (myDist(cluster_data[clusters.9$cluster==8,],clusters.9$centers[8,,drop=FALSE]))
+dist.9.9 <- (myDist(cluster_data[clusters.9$cluster==9,],clusters.9$centers[9,,drop=FALSE]))
+dist.9 <- sum(dist.9.1, dist.9.2, dist.9.3, dist.9.4, dist.9.5, dist.9.6, dist.9.7, dist.9.8, dist.9.9)/nrow(cluster_data)
+dist.9
+```
+
+### K=10 Distance
+
+```{r echo=TRUE}
+dist.10.1 <- (myDist(cluster_data[clusters.10$cluster==1,],clusters.10$centers[1,,drop=FALSE]))
+dist.10.2 <- (myDist(cluster_data[clusters.10$cluster==2,],clusters.10$centers[2,,drop=FALSE]))
+dist.10.3 <- (myDist(cluster_data[clusters.10$cluster==3,],clusters.10$centers[3,,drop=FALSE]))
+dist.10.4 <- (myDist(cluster_data[clusters.10$cluster==4,],clusters.10$centers[4,,drop=FALSE]))
+dist.10.5 <- (myDist(cluster_data[clusters.10$cluster==5,],clusters.10$centers[5,,drop=FALSE]))
+dist.10.6 <- (myDist(cluster_data[clusters.10$cluster==6,],clusters.10$centers[6,,drop=FALSE]))
+dist.10.7 <- (myDist(cluster_data[clusters.10$cluster==7,],clusters.10$centers[7,,drop=FALSE]))
+dist.10.8 <- (myDist(cluster_data[clusters.10$cluster==8,],clusters.10$centers[8,,drop=FALSE]))
+dist.10.9 <- (myDist(cluster_data[clusters.10$cluster==9,],clusters.10$centers[9,,drop=FALSE]))
+dist.10.10 <- (myDist(cluster_data[clusters.10$cluster==10,],clusters.10$centers[10,,drop=FALSE]))
+dist.10 <- sum(dist.10.1, dist.10.2, dist.10.3, dist.10.4, dist.10.5, dist.10.6, dist.10.7, dist.10.8, dist.10.9, dist.10.10)/nrow(cluster_data)
+dist.10
+```
+
+### K=11 Distance
+
+```{r echo=TRUE}
+dist.11.1 <- (myDist(cluster_data[clusters.11$cluster==1,],clusters.11$centers[1,,drop=FALSE]))
+dist.11.2 <- (myDist(cluster_data[clusters.11$cluster==2,],clusters.11$centers[2,,drop=FALSE]))
+dist.11.3 <- (myDist(cluster_data[clusters.11$cluster==3,],clusters.11$centers[3,,drop=FALSE]))
+dist.11.4 <- (myDist(cluster_data[clusters.11$cluster==4,],clusters.11$centers[4,,drop=FALSE]))
+dist.11.5 <- (myDist(cluster_data[clusters.11$cluster==5,],clusters.11$centers[5,,drop=FALSE]))
+dist.11.6 <- (myDist(cluster_data[clusters.11$cluster==6,],clusters.11$centers[6,,drop=FALSE]))
+dist.11.7 <- (myDist(cluster_data[clusters.11$cluster==7,],clusters.11$centers[7,,drop=FALSE]))
+dist.11.8 <- (myDist(cluster_data[clusters.11$cluster==8,],clusters.11$centers[8,,drop=FALSE]))
+dist.11.9 <- (myDist(cluster_data[clusters.11$cluster==9,],clusters.11$centers[9,,drop=FALSE]))
+dist.11.10 <- (myDist(cluster_data[clusters.11$cluster==10,],clusters.11$centers[10,,drop=FALSE]))
+dist.11.11 <- (myDist(cluster_data[clusters.11$cluster==11,],clusters.11$centers[11,,drop=FALSE]))
+dist.11 <- sum(dist.11.1, dist.11.2, dist.11.3, dist.11.4, dist.11.5, dist.11.6, dist.11.7, dist.11.8, dist.11.9, dist.11.10, dist.11.11)/nrow(cluster_data)
+dist.11
+```
+
+### K=12 Distance
+
+```{r echo=TRUE}
+dist.12.1 <- (myDist(cluster_data[clusters.12$cluster==1,],clusters.12$centers[1,,drop=FALSE]))
+dist.12.2 <- (myDist(cluster_data[clusters.12$cluster==2,],clusters.12$centers[2,,drop=FALSE]))
+dist.12.3 <- (myDist(cluster_data[clusters.12$cluster==3,],clusters.12$centers[3,,drop=FALSE]))
+dist.12.4 <- (myDist(cluster_data[clusters.12$cluster==4,],clusters.12$centers[4,,drop=FALSE]))
+dist.12.5 <- (myDist(cluster_data[clusters.12$cluster==5,],clusters.12$centers[5,,drop=FALSE]))
+dist.12.6 <- (myDist(cluster_data[clusters.12$cluster==6,],clusters.12$centers[6,,drop=FALSE]))
+dist.12.7 <- (myDist(cluster_data[clusters.12$cluster==7,],clusters.12$centers[7,,drop=FALSE]))
+dist.12.8 <- (myDist(cluster_data[clusters.12$cluster==8,],clusters.12$centers[8,,drop=FALSE]))
+dist.12.9 <- (myDist(cluster_data[clusters.12$cluster==9,],clusters.12$centers[9,,drop=FALSE]))
+dist.12.10 <- (myDist(cluster_data[clusters.12$cluster==10,],clusters.12$centers[10,,drop=FALSE]))
+dist.12.11 <- (myDist(cluster_data[clusters.12$cluster==11,],clusters.12$centers[11,,drop=FALSE]))
+dist.12.12 <- (myDist(cluster_data[clusters.12$cluster==12,],clusters.12$centers[12,,drop=FALSE]))
+dist.12 <- sum(dist.12.1, dist.12.2, dist.12.3, dist.12.4, dist.12.5, dist.12.6, dist.12.7, dist.12.8, dist.12.9, dist.12.10, dist.12.11, dist.12.12)/nrow(cluster_data)
+dist.12
+```
+
+### Plot
+
+```{r}
+kvalues <- c(2,3,4,5,6,7,8,9,10,11,12)
+distances <- c(dist.2, dist.3, dist.4, dist.5, dist.6, dist.7, dist.8, dist.9, dist.10, dist.11, dist.12)
+
+kdist.df <- data.frame(cbind(kvalues, distances))
+
+kdist.plot <- ggplot(kdist.df, aes(kvalues, distances)) + geom_point() + geom_line() + ggtitle("K-Value Average Cluster Distances")
+kdist.plot
+```
+### Based on the plot above the elbow point looks like it would be at k=9. This is because adding another cluster does not improve, or lower the average distance much. In fact, in this case adding the next cluster increased the average distance. So 9 seems to be the best k value for this data set. 

@@ -1,0 +1,61 @@
+---
+title: "Assignment 7.1"
+author: "Laura Hoffmann"
+date: "7/18/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(car); library(mlogit); library(foreign); library(heuristica)
+knitr::opts_knit$set(root.dir = "C:/Users/Laura/Documents/RStudio/dsc520")
+```
+
+#### I have copied and pasted the data into a CSV file and changed the names of the columns according to the University of California Irvine's website about the data frame.
+
+```{r}
+TSData <- read.csv("data/ThoraricSurgery.csv", header=TRUE)
+```
+
+# A
+
+```{r}
+TSModel.1 <- glm(Risk1Y ~ DGN + FVC + FEV1 + Performance_status + Pain_before + Haemoptysis_before + Dyspnoea_before + Cough_before + Weakness_before + size_of_the_original_tumour + diabetes_mellitus + MI + PAD + Smoking + Asthma + Age_at_surgery, data = TSData, family = binomial())
+summary(TSModel.1)
+```
+
+# B
+
+### It appears that the predictors with the greatest impact on survival rate or the ones of greatest significance were having Dyspnoea before surgery, having the tumor size of OC14 (largest size), having diabetes, and being a smoker. Testing positive for these variables increased the chance of death, or decreased chances of survival for the 1 year risk mark.
+
+```{r}
+exp(TSModel.1$coefficients)
+```
+
+### If the patient had Dyspnoea before the surgery they were 3.93x more likely to not make it one year after surgery. If the size of the tumor was OC14 then the patient was 5.22x more likely to not make it one year after the surgery. If the patient had diabetes they were 2.53x more likely to die before one year and if they were a smoker they were 2.96x more likely to die.
+
+
+# C
+
+```{r include = FALSE}
+# For some reason when I tried building the confusion matrix this way I received an error telling me that TSData$Risk1Yr and TSData$pred_f were of different lengths. So I tested them with the length function and the results said they were the same length. I was unable to figure out why I was getting the error so I built the confusion matrix the way our video showed us this week. I left this code here as well to see if maybe you can figure out why I might've gotten the error.
+TSData$pred <- round(TSModel.1$fitted.values)
+TSData$pred_f <- factor(NA, levels=c("F", "T"))
+TSData$pred_f[TSData$pred==0] = "F"
+TSData$pred_f[TSData$pred==1] = "T"
+length(TSData$Risk1Y)
+length(TSData$pred_f)
+conf = table(TSData$Risk1Yr, TSData$pred_f)
+conf
+```
+
+
+```{r}
+res <- predict(TSModel.1, TSData, type="response")
+confmatrix <- table(actual_value = TSData$Risk1Y, predicted_value = res > 0.5)
+confmatrix
+acc <- sum(diag(confmatrix))/sum(confmatrix)
+acc
+```
+
+### The prediction model made 393 correct assumptions out of 470 which is a success rate or accuracy of about 83.62%.
+

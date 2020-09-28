@@ -1,0 +1,184 @@
+---
+title: "Assignment 6.1 - Housing Data"
+author: "Laura Hoffmann"
+date: "7/12/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(readxl)
+library(QuantPsyc)
+#library(ggplot2)
+library(car)
+knitr::opts_knit$set(root.dir = "C:/Users/Laura/Documents/RStudio/dsc520")
+```
+
+# A
+
+#### I would chose to clean my data set by removing any outliers. This is because we have to be aware of outlying data points, as they are very different from the rest of the data and they bias the model we fit to the data. A few outliers presented themselves after testing the data on plots. I saw from the excel file, row 296 stated that house had 23 bathrooms, which seemed unlikely so I changed the number to 4 after researching the address provided. Other than the bathroom outlier there did appear to be one other outlier as far as location goes, because the zipcode and latitude/longitude were far different from the rest. So I removed that property from the data frame. Although changing just these two points in a data frame of this size won't have a very large impact on the regression analysis, it is importatnt to assure our data has integrity. The code to read the data frame and change the mistaken outliers is below. 
+
+```{r}
+HousingData <- read_xlsx("data/week-6-housing.xlsx")
+HousingData$bath_full_count[HousingData$bath_full_count==23] <- 4
+CLHousingData <- HousingData[!HousingData$lat < 47.5, ]
+```
+
+# B
+
+```{r}
+Variable1 <- lm(`Sale Price`~sq_ft_lot, data=CLHousingData)
+Variable2 <- lm(`Sale Price`~sq_ft_lot + square_feet_total_living + year_built + building_grade, data=CLHousingData)
+```
+
+#### I chose these variables as the predictors because I believe they will have some of the biggest impacts on the sale price of the homes. I am predicting that all of these variables will have a positive relationship with the sale price of the home so as each of these increase, the sale price will also go up.
+
+# C
+
+```{r}
+summary(Variable1)
+summary(Variable2)
+```
+
+#### For Varible1 in which only lot size is used as a predictor, we can see by looking at R-squared that only 1.435% of the data from lot size accounts for the variation of the sale price of the house. With the predictors that I chose in Variable2 we can see that R-squared is 0.2233 meaning that these variables together are responsible for 22.33% of the variation in the sale price of the homes. Therefore, together these variables make for a much better predictor for sale price than just lot size alone, even though 22% isn't even that much of a predictor. For Variable1, adjusted R-squared being at 0.01428 which is a difference of 0.007 or 0.7%, meaning that if the model was based on the population rather than a sample it would account for 0.7% less variance in the outcome. For Variable2 we see that there is a difference of 0.0002 between R-squared and adjusted R-squared so this is accounting for all of the independent variables being used to make the model.
+
+# D
+
+```{r}
+lm.beta(Variable2)
+sd(CLHousingData$`Sale Price`)
+sd(CLHousingData$sq_ft_lot)
+sd(CLHousingData$square_feet_total_living)
+sd(CLHousingData$year_built)
+sd(CLHousingData$building_grade)
+```
+
+#### The standardized beta of square feet lot is 0.042, meaning that as the square feet of lot increases by one standard deviation (56935.31 sq. ft.), sale price increases by 0.042 standard deviations of sale price ($404396.80). Therefore for every additional 56935 sq. ft.of living space in the house the price increases by $16984.67 (0.042*$404396.80)
+#### The standardized beta of total living square feet is 0.345, meaning that as the square feet of total living increases by one standard deviation (989.73 sq. ft.), sale price increases by 0.345 standard deviations of sale price ($404396.80). Therefore for every additional 990 sq. ft.of living space in the house the price increases by $139516.90 (0.345*$404396.80)
+#### For the year built for every one increase in the standard deviation (17.22), the sale price increases by 0.111 standard deviations. So for every 17 years newer a house is the sale price increases by $44888.04 (0.111*$404396.80)
+#### For building grade, for each additional increase in standard deviation (1.09), the sale price increases by 0.088 standard deviations. So for each 1 level better of building grade the sale price increases by $35586.91 (0.088*$404396.80)
+
+# E
+
+```{r}
+format(confint(Variable2), scientific=FALSE)
+```
+
+#### From what the book states regarding my results I can see that I build a model does not cross zero so this is automatically a good thing. This means that all of our predictors have a positive relationship with the outcome, instead of having some predictors with a positive relationship and some with a negative. Square feet of the lot, total living and year built also have tight confidence intervals which means that the estimates for the model is likely to be a good representative of the true population. Building grade is wide spread so it's less representative. 
+
+# F
+
+```{r}
+anova(Variable1, Variable2)
+```
+
+#### We can see in this result of the anova function that compares the models, the value of Pr(>F) collumn is a very, very small number and is therefore a significant improvement from the first model.
+
+# G
+```{r}
+CleanHD <- CLHousingData[, c('Sale Date', 'Sale Price', "addr_full", "building_grade", "square_feet_total_living", "year_built", "sq_ft_lot")]
+CleanHD$residuals<-resid(Variable2)
+CleanHD$standardized.residuals<-rstandard(Variable2)
+CleanHD$studentized.residuals<-rstudent(Variable2)
+CleanHD$cooks.distance<-cooks.distance(Variable2)
+CleanHD$dfbeta<-dfbeta(Variable2)
+CleanHD$dffit<-dffits(Variable2)
+CleanHD$leverage<-hatvalues(Variable2)
+CleanHD$covariance.ratios<-covratio(Variable2)
+```
+
+# H
+
+```{r}
+CleanHD$standardized.residuals > 2 | CleanHD$standardized.residuals < -2
+```
+
+# I
+
+```{r}
+CleanHD$large.residual <- CleanHD$standardized.residuals > 2 | CleanHD$standardized.residuals < -2
+```
+
+```{r}
+sum(CleanHD$large.residual)
+```
+
+# J
+
+```{r lrg resid true, echo=TRUE}
+CleanHD[CleanHD$large.residual,c('Sale Price', "building_grade", "square_feet_total_living", "year_built", "sq_ft_lot", "standardized.residuals")]
+```
+
+#### Above can we see that variables Sale Price, building_grade, square_feet_total_living, year_built, sq_ft_lot, and standardized.residuals only for cases for which large.residual is true. With +/- 2 used as our large residual we would expect for 5% of the cases to be true which would be 643, however we have less with 334 cases which accounts for about 2.6% of the cases.
+
+# K
+
+```{r}
+CleanHD[CleanHD$large.residual,c("cooks.distance", "leverage", "covariance.ratios")]
+```
+
+### Cooks Distance
+
+```{r}
+CDDF <- CleanHD[CleanHD$large.residual,("cooks.distance")]
+CDDF$cook1 <- CDDF$cooks.distance > 1
+sum(CDDF$cook1)
+sortcook <- CDDF[order(-CDDF$cooks.distance),]
+sortcook
+```
+
+#### In the cooks.distance columns we see that all of the cases have a value below 1 so none of the cases is having undue influence on the model. However by sorting the cases we can see there is one case really close to 1, but still not going over.
+
+### Leverage
+```{r}
+avglev <- mean(CleanHD$leverage)
+avglev
+
+LRDF <- CleanHD[CleanHD$large.residual,("leverage")]
+
+LRDF$levX2 <- LRDF$leverage > (avglev * 2)
+sum(LRDF$levX2)
+
+LRDF$levX3 <- LRDF$leverage > (avglev * 3)
+sum(LRDF$levX3)
+```
+#### In the total data set the average leverage is 0.000388. When we apply that average leverage to our large residual cases we can observe that 110 of the 334 cases are more than 2x the average and 83 cases are more than 3x the average.
+
+### Covariance Ratios
+
+```{r}
+CRDF <- CleanHD[CleanHD$large.residual,("covariance.ratios")]
+CRDF$window <- CRDF$covariance.ratios > 1.001166 | CRDF$covariance.ratios < 0.998834
+sum(CRDF$window)
+```
+
+#### A lot of the covariance ratios (264 to be exact) are outside of the window of 0.998834 and 1.001166 which was calculated using 1 +/- [3(4+1)/12864] where 4 is the number of predictors in the model and 12864 is the number of cases.
+
+# L
+
+```{r}
+durbinWatsonTest(Variable2)
+```
+#### Because the D-W Statistic is less than 2 we know that there is a positive autocorrelation. And because the value is also under 1 apparently there is also a cause for concern. This is because the value 2 measures no autocorrelation but because our value is far from it the autocorrelation between the variables is stronger, they are not independent. 
+
+# M
+
+```{r}
+vif(Variable2)
+1/vif(Variable2)
+mean(vif(Variable2))
+```
+
+#### All of the VIF values are well below 10, and the tolerance statistics are all well above .2. The average is a little bit higher than 1 but I believe with the other measures we can conclude that there is not much collinearity.
+
+# N
+
+```{r}
+plot(Variable2)
+hist(CleanHD$studentized.residuals) # same as hist(rstudent(Variable2))
+```
+
+#### The pattern in our first plot seems to follow a slight trend but can be a little sporadic. It is not in much of an odd shape so it is mostly normal with a little heteroscedasiticity. There are a few clusters of large standardized residuals as well. Since a straight line would represent a normal distribution for the second plot, the shape seems a little weird and we can see that our data is not normal because a lot of it does not lie on the line. The third plot models the residuals after standardization. The histogram is tall in one spot and demonstrates positive kurtosis. It seems slightly skewed.
+
+# O
+
+#### Overall it can seem like this regression model is bias and is not a good representation of the population, thanks to all of these tests that were performed.  Most of my outputs confused me because according to the book it's unusual for outputs like these. I would expect to not see models like this in the future and instead see more normalcy for the regressions. I would imagine that removing the more problematic data points encountered in these tests would improve the model and increase its normalcy. There seemed to be a lot of weird data points discovered using these test but even so we have to remember it's out of over 12,000 cases. So while there did seem to be a lot of unusual outputs for the test I would think this would come more often with larger data sets.
